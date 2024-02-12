@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login System</title>
+    <script>
+        function openSiteInSameTab(url) {
+        window.location.href = url;
+    }
+    // Assume 'encrypt' function is already defined
+    function encrypt(text) {
+    return btoa(text);
+}
+    async function checkLogincok() {
+        var usr = getCV("usr");
+        var pswd = getCV("pswd");
+        var encryptedUsername = encrypt(usr);
+        var encryptedPassword = encrypt(pswd);
+
+        try {
+            const response = await fetch('/login/yourfile.txt');
+            const fileContent = await response.text();
+            const lines = fileContent.split('\n');
+            
+            for (const line of lines) {
+                const fileData = line.split(' ');
+                if (encryptedUsername === fileData[0] && encryptedPassword === fileData[1]) {
+                    return;
+                }
+            }
+
+            
+        } catch (error) {
+            console.error('Error reading file:', error);
+            alert('An error occurred while reading the file.');
+        }
+    }
+
+    function getCV(cookieName) {
+        var name = cookieName + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var cookieArray = decodedCookie.split(';');
+        
+        for (var i = 0; i < cookieArray.length; i++) {
+            var cookie = cookieArray[i].trim();
+            if (cookie.indexOf(name) == 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+        
+        
+    }
+    </script>
+</head>
+<body onload="checkLogincok()">
+<script>
+function openSiteInSameTab(url) {
+window.location.href = url;
+}
+    function getCookieValue(cookieName) {
+    var name = cookieName + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var cookieArray = decodedCookie.split(';');
+    for(var i = 0; i < cookieArray.length; i++) {
+        var cookie = cookieArray[i].trim();
+        if (cookie.indexOf(name) == 0) {
+            return cookie.substring(name.length, cookie.length);}}
+    return null;}
+    var expirationDate = new Date();
+    expirationDate.setTime(expirationDate.getTime() + (24 * 60 * 60 * 7 * 1000));
+    var expires = "; expires=" + expirationDate.toUTCString();
+    function encrypt(text) {
+        return btoa(text);
+    }
+    async function checkLogin() {
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+    var encryptedUsername = encrypt(username);
+    var encryptedPassword = encrypt(password);
+    try {
+        const response = await fetch('yourfile.txt');
+        const fileContent = await response.text();
+        const lines = fileContent.split('\n');
+        for (const line of lines) {
+            const fileData = line.split(' ');
+            if (encryptedUsername === fileData[0] && encryptedPassword === fileData[1]) {
+                // Extract the 'id' from the fileData
+                const id = fileData[2];
+                
+                // Save username, password, and id as cookies
+                document.cookie = "usr=" + username + "; path=/";
+                document.cookie = "pswd=" + password + "; path=/";
+                document.cookie = "userId=" + id + "; path=/";
+
+                openSiteInSameTab('/main/index.html')
+                return;
+            }
+        }
+        alert('Login failed. Please check your username and password.');
+    } catch (error) {
+        console.error('Error reading file:', error);
+        alert('An error occurred while reading the file.');
+    }
+}
+
+function t() {
+    var testCookieValue = getCookieValue("userId");
+    console.log(testCookieValue); // Output the value of the 'userId' cookie
+}
+
+</script>
+
+<h2>Login</h2>
+<label for="username">Username:</label>
+<input type="text" id="username" required><br>
+
+<label for="password">Password:</label>
+<input type="password" id="password" required><br>
+
+<button onclick="checkLogin()">Login</button>
+<button onclick="t()">ddddddddddddd</button>
+</body>
+</html>
